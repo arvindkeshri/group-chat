@@ -85,6 +85,7 @@ signupBtn.onclick = async function(event){
     axios.post('http://localhost:3000/signup', obj)
         .then(res=>{
             console.log('Signup successful');
+            alert("Successfully signed up");
         })
         .catch(err=>{
             console.log("Error axios:", err.response);
