@@ -6,7 +6,8 @@
 }
 
  body{
-    background-color: #fcf5eb;
+    /* background-color: #fcf5eb; */
+    background-color: #086d2d;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -44,7 +45,7 @@
     font-size: 70px;
     font-family: 'Poppins', sans-serif;
     /* margin-bottom: 60px; */
-    color: #25D366;
+    color: #fff;
     position: relative;
     text-align: center;
     /* padding: 25px; */
@@ -53,26 +54,41 @@
     margin: 0;
     bottom: 25%;
     z-index: 1;
-    top: -20px;
+    top: 40px;
     margin-top: 10px;
     
 
 }
+
+.container h1:hover {
+    background-color: #086d2d; /* Hover color */
+    color: #000; /* Text color on hover */
+}
+
 .container h6{
     font-size: 12px;
-    /* font-family: 'Poppins', sans-serif; */
-    /* margin-bottom: 60px; */
-    color: #25D366;
+     font-family: 'Poppins', sans-serif; 
+    margin-bottom: 60px; 
+    color: #fff;
     position: relative;
-    top: -25px;
+    top: -15px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     padding: 0;
     margin: 0;
+    top: 40px;
     z-index: 1;
 
 }
+
+.container h6:hover {
+    background-color: #086d2d; /* Hover color */
+    color: #000; /* Text color on hover */
+}
+
+
+
 
 .form-box{
     /* width: 100%; */
@@ -93,7 +109,7 @@
 .form-box h1{
     font-size: 30px;
     margin-bottom: 60px;
-    color: #25D366;
+    color: #086d2d;
     position: relative;
     /* position: fixed; */
 
@@ -104,7 +120,7 @@
     width: 30px;
     height: 4px;
     border-radius: 3px;
-    background: #25D366;
+    background: #086d2d;
     position: absolute;
     bottom: -10px;
     left: 50%;
@@ -147,7 +163,7 @@ form p{
 
 form p a{
     text-decoration: none;
-    color: #25D366;
+    color: #086d2d;
     font-size: 14px;
     font-family: 'Poppins', sans-serif;
 }
@@ -160,7 +176,7 @@ form p a{
 
 .btn-field button {
     flex-basis: 48%;
-    background: #25D366;
+    background: #086d2d;
     color: #fff;
     height: 45px;
     border-radius: 20px;
@@ -180,12 +196,16 @@ form p a{
     background: #eaeaea;
     color: #555;    
 }
+.btn-field button:hover {
+    background-color: #000; /* Hover color */
+    color: #fff; /* Text color on hover */
+}
 
 #errMessage{
     font-size: 14px;
     font-weight: 500;
     font-family: 'Poppins', sans-serif;
-    color: #25D366;
+    color: #086d2d;
     text-align: center;
     animation: animate 1.5s linear infinite;
 
@@ -230,7 +250,7 @@ form p a{
 
 .close {
     color: #fdfafa;
-    background-color: #25D366;
+    background-color: #086d2d;
     float: right;
     font-size: 30px;
     font-weight: bold;
