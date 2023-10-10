@@ -73,11 +73,7 @@ html, body{
     font-weight: 500;
 
 }
-#exitchatbtn:hover, #groupbtn:hover{
-    background-color:  #202d3a;
-    border: none;
 
-}
 
 .messages {
     flex: 1;
@@ -95,7 +91,7 @@ html, body{
     background-color: #ffffff;
     border-top: 2px solid #e4e1e1;
     padding: 5px;
-    height: 90px;
+    height: 100px;
     
 
 }
@@ -109,6 +105,7 @@ html, body{
     outline: none; /* Remove default input focus outline */
     margin-right: 20px;
     margin-left: 20px;
+    margin-bottom: 35px;
 }
 
 #sendbutton{
@@ -116,6 +113,7 @@ html, body{
     font-size: 25px;
     cursor: pointer;
     margin-right: 20px;
+    margin-bottom: 35px;
 }
 
 #sendfilebtn {
@@ -123,6 +121,7 @@ html, body{
     font-size: 25px;
     cursor: pointer;
     margin-left: 20px;
+    margin-bottom: 35px;
 }
 
 #sendbutton:hover, #sendfilebtn:hover {
