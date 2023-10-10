@@ -1,0 +1,132 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    
+
+}
+
+html, body{
+    /* font-family: "Roboto", sans-serif; */
+    /* height: 100vh; */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    /* width: 100%; */
+    /* display: flex;  */
+    background-color: #e8e8e8;
+
+}
+
+.main{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    margin-top: 15px;
+    background-color: #e8e8e8;
+    
+}
+
+.group{
+    height: 100vh;
+    width: 25%;
+    border: 2px solid #e4e1e1;
+    border-right: 1px solid #e4e1e1;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 0 0 0 10px;
+}
+
+.chatscreen{
+    border: 1px solid #e4e1e1;
+    border-right: none;
+    height: 100vh;
+    width: 79.75%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+
+
+}
+.chatscreen .header, .group .groupheader {
+    background: #ffffff;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.chatscreen .header .logo,.group .groupheader .grouplogo {
+    font-size: 25px;
+    color: #000000ba;
+    font-weight: 600;
+
+}
+
+#groupbtn, #exitchatbtn {
+    background-color: #28D146;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+
+}
+#exitchatbtn:hover, #groupbtn:hover{
+    background-color:  #202d3a;
+    border: none;
+
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    background-color: rgb(250, 250, 250);
+    
+    
+
+
+}
+.typebox{
+    margin-top: 614px;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-top: 2px solid #e4e1e1;
+    padding: 5px;
+    height: 90px;
+    
+
+}
+
+
+#messageinput {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none; /* Remove default input focus outline */
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+#sendbutton{
+
+    font-size: 25px;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+#sendfilebtn {
+
+    font-size: 25px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+#sendbutton:hover, #sendfilebtn:hover {
+    color: #28D146;
+    
+}
+
