@@ -1,32 +1,29 @@
-const token = localStorage.getItem('token')
-const user = {name: 'arvind'}
-// const socket = io('https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js');
 const socket = io('http://localhost:3000')
-
+const usertoken = (localStorage.getItem('token'))                       //userId and name
 
 document.getElementById('sendbutton').addEventListener('click', (e)=>{
     e.preventDefault();
-    const messsageinput = document.getElementById('messageinput');
-    displayMessage("you", messsageinput.value);
-    messsageinput.value="";
-    //axios post msg call
+    const messageinput = document.getElementById('messageinput');
+    const message = {message: messageinput.value, token:usertoken};
+    socket.emit('send-message', message);
+    displayMessage("you", message.message);
+    messageinput.value="";
+    
 })
 
-
-
-//user-joined broadcast
-socket.emit('user-joined', user);  
-socket.on('user-joined', user=>{
-    console.log(user);
+//user-joined to server and receive broadcast for the same from server
+socket.on('connect', ()=>{
+    socket.emit('user-joined', usertoken);  
 })
+
 socket.on('user-joined-broadcast', user=>{
-    updateMessage(`${user} joined the chat`);
+    updateMessage(`${user.name} joined the chat`);
 })
+
 
 //when user sends a message
-// socket.emit('send-message', message)
-
 socket.on('receive-message', data=>{
+    console.log("client msg data", data);
     displayMessage(data.user, data.message);
 })
 
@@ -34,9 +31,6 @@ socket.on('receive-message', data=>{
 socket.on('user-left', user=>{
     updateMessage(`${user} left the chat`);
 })
-
-
-
 
 
 function displayMessage (sender, message, timestamp) {
@@ -47,7 +41,7 @@ function displayMessage (sender, message, timestamp) {
 
     const nameContainer = document.createElement('div');
     nameContainer.classList.add("name");
-    nameContainer.textContent = sender;
+    nameContainer.textContent = sender + ":" + " ";
 
     const textContainer = document.createElement("div");
     textContainer.classList.add( sender==="you" ? "mytext" : "sendertext");

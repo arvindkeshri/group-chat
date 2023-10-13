@@ -1,22 +1,15 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const sequelize = require("./util/sequelize");
-const http = require("http").createServer(app);
-const io = require("socket.io")(http, {
-  cors: {
-    origin: ["http://127.0.0.1:3000", "http://localhost:3000"],
-    credentials: true,
-  },
-});
-
-//import and middlewares
-const cors = require("cors");
+const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const path = require("path");
+const sequelize = require("./util/sequelize");
+const server = require("http").createServer(app);
+const io = require("socket.io")(server) 
+
 
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "http://127.0.0.1:3000", credentials: true }));
 app.use(bodyParser.json());
 
 //import models and database
@@ -31,53 +24,86 @@ Resetpassword.belongsTo(User);
 const userRouter = require("./routes/user");
 const passwordRouter = require("./routes/password");
 
-// app.get('/socket.io/socket.io.js', (req, res) => {
-//     res.setHeader('Content-Type', 'application/javascript');
-//     res.sendFile( path.join(__dirname,'node_modules/socket.io/socket.io.js'));
-// });
-
 //route directs
 app.use("/", userRouter);
 app.use("/password", passwordRouter);
 
 //use static files
 app.use(express.static(path.join(__dirname, "views")));
-// app.use((req, res)=>{res.sendFile(path.join(__dirname,`/views/${req.url}`))})
-
 
 sequelize
   .sync()
   .then((result) => {
-    app.listen(3000, () => {
+    server.listen(3000, () => {
       console.log("Server running");
     });
   })
   .catch((err) => {
     console.log("Database Error setting Sequelize", err);
   });
-  const users = [];
 
-  //initialize the socket aka connection event
+  //initialize the socket aka connection event and give socket.id key to user
+  const users = [];
   io.on("connection", (socket) => {
-    //user join event & broadcast
-    socket.on("user-joined", (user) => {
-        console.log(socket, user);
-      // users[socket.id] = user; //gives socket.id key and attches with user
-      
-      socket.broadcast.emit("user-joined", user);
+    socket.on("user-joined", (usertoken) => {
+      const user = jwt.decode(usertoken);
+      users[socket.id] = user;                                      
+      socket.broadcast.emit("user-joined-broadcast", user);
+  
     });
   
-    //send-message event and recieve-message broadcast
-    // socket.on("send-message", (message) => {
-    //   const user = users[socket.id];
-    //   socket.broadcast.emit("recieve-message", { user: user, message: message });
-    // });
+    // send-message event and recieve-message broadcast
+    socket.on("send-message", (message) => {
+      const user = jwt.decode(message.token);
+      const userb = users[socket.id];
+      const data =  { user: user.name, message: message.message }
+      socket.broadcast.emit("receive-message", data);
+    });
   
-    //user-left event & broadcast it executes automatically when user log out or close the tab, inbuilt socket.io feature
-    // socket.on("disconnect", () => {
-    //   const user = users[socket.id];
-    //   delete users[socket.id];
-    //   socket.broadcast.emit("user-left", user);
-    // });
+// user-left event & broadcast it executes automatically when user log out or close the tab, inbuilt socket.io feature
+    socket.on("disconnect", () => {
+      const user = users[socket.id];
+      delete users[socket.id];
+      socket.broadcast.emit("user-left", user.name);
+    });
   });
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // app.use((req, res)=>{res.sendFile(path.join(__dirname,`/views/${req.url}`))})
