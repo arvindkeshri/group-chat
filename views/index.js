@@ -38,7 +38,7 @@ signinBtn.onclick = function(event){
                if(res.status===200){
                  localStorage.setItem('token', res.data.token);
                  console.log(res.data);
-                 window.location.href = "./daily-expenses.html"; 
+                 window.location.href = "./chat.html"; 
                }
                 })
             .catch(err=>{

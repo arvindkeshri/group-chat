@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize'); //table
 const sequelize = require('../util/sequelize'); //connected object
 
-const Chat =sequelize.define('chats', {
+const Message =sequelize.define('messages', {
     message: {type: Sequelize.STRING},
     }, 
     
 )
 
-module.exports = Chat;
+module.exports = Message;
