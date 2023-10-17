@@ -6,8 +6,8 @@ const {v4:uuidv4} = require('uuid');
 const bcrypt = require('bcrypt'); 
 const path = require('path'); 
 const sequelize = require('../util/sequelize')       
-const Resetpassword = require('../models/password-model');
-const User = require('../models/user-model')
+const Resetpassword = require('../models/password');
+const User = require('../models/user')
 require('dotenv').config();                       //access environment variables
 const brevoAPIKey = process.env.BREVO_API_KEY;
 

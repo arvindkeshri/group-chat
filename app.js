@@ -13,20 +13,46 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //import models and database
-const User = require("./models/user-model");
-const Resetpassword = require("./models/password-model");
+const User = require("./models/user");
+const Resetpassword = require("./models/password");
+const Message = require('./models/message');
+const Group = require('./models/group');
+// const Usergroup = require('./models/usergroup');
+
 
 //Model Relation
 User.hasMany(Resetpassword);
 Resetpassword.belongsTo(User);
 
+User.hasMany(Message);
+Message.belongsTo(User);
+
+User.hasMany(Group);     //can be skipped
+Group.belongsTo(User);
+
+// Usergroup.belongsTo(User);
+// Usergroup.belongsTo(Group);
+Group.belongsToMany(User, {through: 'usergroup'});
+User.belongsToMany(Group, {through: 'usergroup'});
+
+Group.hasMany(Message);
+Message.belongsTo(Group);
+
+
+
+
 //import routes
 const userRouter = require("./routes/user");
 const passwordRouter = require("./routes/password");
+const messageRouter = require('./routes/message');
+const groupRouter = require('./routes/group');
+
 
 //route directs
 app.use("/", userRouter);
+app.use("/", messageRouter);
 app.use("/password", passwordRouter);
+app.use('/group', groupRouter);
 
 //use static files
 app.use(express.static(path.join(__dirname, "views")));

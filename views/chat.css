@@ -70,6 +70,20 @@ html, body{
 
 }
 
+.newgrouplist{
+    background: #ffffff;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+    border-bottom: 1px solid #eee;
+    border-radius: 0px 0 0px 0px;
+    z-index: 1;
+
+}
+
+
 .chatscreen .header .logo,.group .groupheader .grouplogo {
     font-size: 25px;
     color: #000000ba;

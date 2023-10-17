@@ -3,6 +3,7 @@ const sequelize = require('../util/sequelize'); //connected object
 
 const Group =sequelize.define('groups', {
     groupname: {type: Sequelize.STRING},
+    isAdmin: {type: Sequelize.BOOLEAN, defaultValue:true},
     }, 
     
 )
