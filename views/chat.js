@@ -1,10 +1,11 @@
 const socket = io('http://localhost:3000')
-const usertoken = localStorage.getItem('token')                       //userId and name
+const usertoken = localStorage.getItem('token')                      
+let activeGroupId = localStorage.getItem('activeGroupId');
 
 
 window.addEventListener('DOMContentLoaded',function(){
     getAllGroupsfromDB();
-    getAllMessagesFromDB();
+    // getAllMessagesFromDB();
     document.getElementById('sendbutton').addEventListener('click', async(e)=>{
         e.preventDefault();
         sendMessageToServer();
@@ -22,16 +23,20 @@ window.addEventListener('DOMContentLoaded',function(){
      })
 })
 
-
+function clearMessages(){
+    const chatMessages = document.querySelector(".messages");
+    chatMessages.innerHTML = '';
+}
 async function getAllMessagesFromDB(){
     const userId = localStorage.getItem('userId');
+    const activeGroupId = localStorage.getItem('activeGroupId');
     if(!usertoken || !userId){
         console.log("No new messages in local storage");
         return;
     }
     try{
-        const response = await axios.get('http://localhost:3000/getMessage', {headers:{Authorization: usertoken}})  
-
+        const response = await axios.get(`http://localhost:3000/getMessage/${activeGroupId}`, {headers:{Authorization: usertoken}})  
+        console.log("response",response.data.allMessage)
         const chatMessages = document.querySelector(".messages");
         chatMessages.innerHTML = '';
         const messages = {};   
@@ -39,12 +44,12 @@ async function getAllMessagesFromDB(){
             let message = response.data.allMessage[i].message;
             let id = response.data.allMessage[i].id;
             let name = response.data.allMessage[i].user.name;
-            localStorage.setItem('name', name);
             messages[id]= {name: name, message: message};
             const isUser = (response.data.allMessage[i].userId == userId);
             displayMessage(isUser ? "you" : name, message)
          }
             localStorage.setItem('chatMessages', JSON.stringify(messages));
+            
     }catch(err){
         console.log("Unable to get message from local storage", err)
     }
@@ -54,15 +59,13 @@ async function getAllMessagesFromDB(){
 async function sendMessageToServer(){
         const messageinput = document.getElementById('messageinput');
         const messageText = messageinput.value;
-        const message = {message: messageText, token:usertoken};
+        const message = {message: messageText, token:usertoken, activeGroupId};
         if(!usertoken) return;
         try{  
             socket.emit('send-message', message);
             displayMessage("you", message.message);
             const response = await axios.post('http://localhost:3000/sendMessage', message, {headers:{Authorization: usertoken}})
             messageinput.value="";
-            const userId = response.data.newMessage.data.userId
-            localStorage.setItem('userId', userId) 
         }catch(err){
             console.log("unable to send", err)
         }        
@@ -99,6 +102,15 @@ socket.on('user-left', user=>{
     updateMessage(`${user} left the chat`);
 })
 
+function updateMessage (message) {
+    const messages = document.querySelector(".messages");
+    const messageContainer = document.createElement("div");
+    messageContainer.classList.add( "update");
+    messageContainer.textContent = message;
+    messages.appendChild(messageContainer);
+    messages.scrollTop = messages.scrollHeight;
+}
+
 
 
 
@@ -111,9 +123,8 @@ async function createGroup(groupname){
         const response = await axios.post('http://localhost:3000/group/createGroup', group,  {headers:{Authorization: usertoken}});
         console.log("response",response.data);
         const data = {groupname: response.data.newGroup.groupname, groupId: response.data.newGroup.groupId}
-       
-        
-        //display group in the group container
+        localStorage.setItem('activeGroupId', data.groupId );
+        localStorage.setItem('activeGroupName', data.groupname);
         displayGroup(data);
     }catch(err){
         console.log(err)
@@ -135,18 +146,124 @@ async function getAllGroupsfromDB(){
 }
 
 
+
+function displayMessage (sender, message) {
+    const messages = document.querySelector(".messages");
+
+    const messageContainer = document.createElement("div");
+    messageContainer.classList.add( sender=="you" ? "my-message" : "other-message");
+
+    const nameContainer = document.createElement('div');
+    nameContainer.classList.add("name");
+    nameContainer.textContent = sender +":";
+
+    const br = document.createElement('br');
+    nameContainer.appendChild(br);
+
+    const textContainer = document.createElement("div");
+    textContainer.classList.add( sender==="you" ? "mytext" : "sendertext");
+    textContainer.textContent = message;
+
+    messageContainer.appendChild(nameContainer);
+    messageContainer.appendChild(textContainer);
+
+    messages.appendChild(messageContainer);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+
+
+
 function displayGroup(data){
     const groupname = data.groupname;
-    const groupId = data.groupId;
-    localStorage.setItem('groupname', groupname);
-    localStorage.setItem('groupId', groupId);
+    const groupId = data.id;
     const grouplist = document.getElementById('grouplist');
-
     const newGroup = document.createElement('div');
     newGroup.className = 'newgrouplist';
     newGroup.textContent = groupname;
+
     newGroup.addEventListener('click', ()=>{
-        //show group messages on chatscreen calling such function
+        localStorage.setItem('activeGroupName', groupname);
+        localStorage.setItem('activeGroupId', groupId)
+        const chatHeader = document.querySelector('.logo');
+        chatHeader.textContent = groupname;
+        getAllMessagesFromDB();            
+        const userlistpane = document.getElementById('userlistpane');
+        
+        chatHeader.addEventListener('click', ()=>{
+            userlistpane.innerHTML = '';
+            userlistpane.classList.toggle("show");
+            // const searchInput = document.createElement('input');
+            // searchInput.type = 'text';
+            // searchInput.placeholder = 'Search users';
+            // const searchBtn = document.createElement('button');
+           // searchBtn.className = "btn btn-success";
+            //searchBtn.textContent = 'Search';
+            //userlistpane.appendChild(searchInput);
+           // userlistpane.appendChild(searchBtn);
+
+            const addUserInput = document.createElement('input');
+            addUserInput.type = 'text';
+            addUserInput.className = 'adduserinput';
+            
+            addUserInput.placeholder = 'user email to add';
+            const addUserBtn = document.createElement('button');
+            addUserBtn.className = "btn";
+            addUserBtn.id = 'adduserbtn';
+            addUserBtn.textContent = 'Add';
+
+            userlistpane.appendChild(addUserInput)
+            userlistpane.appendChild(addUserBtn);
+            addUserBtn.addEventListener('click', ()=>{
+                //if admin add user
+            })
+
+             //axios get call to get all group users 
+            const userlist = document.createElement('div');
+            userlist.className = 'userlist';
+            userlist.textContent = 'group members list here';
+            const makeAdminBtn = document.createElement('button');
+            makeAdminBtn.textContent = 'Make Admin';
+            makeAdminBtn.className = 'btn';
+            const deleteUserBtn = document.createElement('button');
+            deleteUserBtn.className = 'btn';
+            deleteUserBtn.id = 'removeuser';
+            deleteUserBtn.textContent = 'Remove';
+
+            userlist.appendChild(makeAdminBtn)
+            userlist.appendChild(deleteUserBtn);
+            deleteUserBtn.addEventListener('click', ()=>{
+            
+            })
+        
+            userlistpane.appendChild(userlist);
+            const deleteGroupbtn = document.createElement('button');
+            deleteGroupbtn.textContent = 'Delete Group'
+            deleteGroupbtn.className = 'btn';
+            deleteGroupbtn.id = 'deletegroupbtn';
+            userlistpane.appendChild(deleteGroupbtn)
+            deleteGroupbtn.addEventListener('click', ()=>{
+                //if admin delete group
+
+            })
+
+            const exitGroupBtn = document.createElement('button');
+            exitGroupBtn.textContent = 'Leave Group';
+            exitGroupBtn.className = 'btn';
+            exitGroupBtn.id = 'exitgroupbtn';
+            userlistpane.appendChild(exitGroupBtn);
+            exitGroupBtn.addEventListener('click', ()=>{
+
+            })
+            
+            
+            
+            
+        })
+        
+        clearMessages();
+        getAllMessagesFromDB();
+        console.log(`Displaying all messages of the group ${data}`)
     })
 
     grouplist.appendChild(newGroup);
@@ -173,74 +290,3 @@ function displayGroup(data){
 
 
 
-
-
-
-
-
-function displayMessage (sender, message, timestamp) {
-    const messages = document.querySelector(".messages");
-
-    const messageContainer = document.createElement("div");
-    messageContainer.classList.add( sender=="you" ? "my-message" : "other-message");
-
-    const nameContainer = document.createElement('div');
-    nameContainer.classList.add("name");
-    nameContainer.textContent = sender + ":" + " ";
-
-    const textContainer = document.createElement("div");
-    textContainer.classList.add( sender==="you" ? "mytext" : "sendertext");
-    textContainer.textContent = message;
-
-    const timestampElement = document.createElement("div");
-    timestampElement.classList.add("message-timestamp");
-    timestampElement.textContent = timestamp;
-
-    messageContainer.appendChild(nameContainer);
-    messageContainer.appendChild(textContainer);
-
-    messages.appendChild(messageContainer);
-    messages.scrollTop = messages.scrollHeight;
-}
-
-function updateMessage (message) {
-    const messages = document.querySelector(".messages");
-    const messageContainer = document.createElement("div");
-    messageContainer.classList.add( "update");
-    messageContainer.textContent = message;
-    messages.appendChild(messageContainer);
-    messages.scrollTop = messages.scrollHeight;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// socket.on('receive-message', (message)=>{
-//     const {userId, name}  = {userId: message.user.id, name: message.user.name}
-//     const id = localStorage.getItem('id');
-
-//     if(userId == id) displayMessage("you", message.data.message);
-//     else displayMessage(name, message.data.message);
-     
-// })

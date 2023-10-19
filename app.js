@@ -17,26 +17,26 @@ const User = require("./models/user");
 const Resetpassword = require("./models/password");
 const Message = require('./models/message');
 const Group = require('./models/group');
-// const Usergroup = require('./models/usergroup');
+const Usergroup = require('./models/usergroup');
 
 
 //Model Relation
 User.hasMany(Resetpassword);
-Resetpassword.belongsTo(User);
+Resetpassword.belongsTo(User,  {constraints: true, onDelete: 'CASCADE'});
 
 User.hasMany(Message);
 Message.belongsTo(User);
 
 User.hasMany(Group);     //can be skipped
-Group.belongsTo(User);
+Group.belongsTo(User,  {constraints: true, onDelete: 'CASCADE'});
 
 // Usergroup.belongsTo(User);
 // Usergroup.belongsTo(Group);
-Group.belongsToMany(User, {through: 'usergroup'});
-User.belongsToMany(Group, {through: 'usergroup'});
+Group.belongsToMany(User, {through: Usergroup});
+User.belongsToMany(Group, {through: Usergroup});
 
 Group.hasMany(Message);
-Message.belongsTo(Group);
+Message.belongsTo(Group, {constraints: true, onDelete: 'CASCADE'});
 
 
 

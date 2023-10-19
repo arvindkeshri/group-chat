@@ -33,11 +33,12 @@ signinBtn.onclick = function(event){
     try{
         axios.post('http://localhost:3000/signin', obj)
             .then(res=>{
-                console.log('Signin successful', res.data);
+                console.log('Signin successful', res);
               
                if(res.status===200){
                  localStorage.setItem('token', res.data.token);
-                 console.log(res.data);
+                 localStorage.setItem('userId', res.data.userId);
+                 localStorage.setItem('user', res.data.name);
                  window.location.href = "./chat.html"; 
                }
                 })

@@ -7,24 +7,24 @@
 }
 
 html, body{
-    /* font-family: "Roboto", sans-serif; */
-    /* height: 100vh; */
     height: 100%;
     margin: 0;
     padding: 0;
-    /* width: 100%; */
-    /* display: flex;  */
+    overflow: hidden;
     background-color: #e8e8e8;
 
 }
 
 .main{
     display: flex;
-    height: 100%;
+    /* height: 100%; */
+    min-height: 100vh;
+    /* max-height: 100vh; */
     width: 100%;
     margin-top: 15px;
     background-color: #e8e8e8;
     border-radius: 10px 10px 10px 10px;
+    /* overflow: hidden; */
     
 }
 
@@ -37,6 +37,10 @@ html, body{
     margin-bottom: 10px;
     border-radius: 10px 0 0 10px;
 }
+.grouplogo{
+    margin-left: -10px;
+    font-size: medium;
+}
 
 .chatscreen{
     border: 1px solid #e4e1e1;
@@ -46,6 +50,8 @@ html, body{
     display: flex;
     flex-direction: column;
     background-color: #fff;
+    background:#f9f9f9;
+    /* overflow: scroll; */
 
 }
 .chatscreen .header, .group .groupheader {
@@ -59,10 +65,12 @@ html, body{
     border-radius: 0px 0 0px 0px;
     z-index: 1;
 
+
 }
 
 .chatscreen .header{
     border-radius: 0px 10px 0px 0px;
+    position: relative;
 }
 
 .group .groupheader{
@@ -80,7 +88,9 @@ html, body{
     border-bottom: 1px solid #eee;
     border-radius: 0px 0 0px 0px;
     z-index: 1;
-
+}
+.newgrouplist:hover{
+    background-color:#f9f9f9;
 }
 
 
@@ -91,13 +101,45 @@ html, body{
 
 }
 
-#groupbtn, #exitchatbtn {
+#groupbtn {
     background-color: #28D146;
     border: none;
     color: #ffffff;
     font-size: 18px;
     font-weight: 500;
+    margin-right: -10px;
 
+}
+
+#userlistpane{
+    display:none;
+    background-color: #fff;
+    border: 1px solid #e5d7d7 ;
+    box-shadow: 0 0 10px 10px rgb(125, 130, 125, 0.1);
+    height: 500px;
+    width: 550px;
+    overflow-y: auto;
+    position: absolute;
+    z-index: 2;
+    top: 60px;
+}
+
+.show{
+    display:block !important;
+}
+
+
+ #exitchatbtn {
+    background-color: #28D146;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 5px;
+
+}
+#groupbtn:hover, #exitchatbtn:hover{
+    background-color:#2c6b14;
 }
 
 
@@ -108,6 +150,7 @@ html, body{
     margin-top: 0px;
     margin-bottom: 0px;
     height: 800px;  
+    /* overflow: hidden; */
    
 }
 
@@ -119,6 +162,9 @@ html, body{
     float: right;
     clear: both;
     margin-right: 50px;
+    margin-left: 400px;
+    min-width: 200px;
+    max-width: 600px;
 
 }
 
@@ -131,6 +177,9 @@ html, body{
     float: left;
     clear: both;
     margin-left: 50px;
+    margin-right: 400px;
+    min-width: 250px;
+    max-width: 600px;
     
 
 }
@@ -144,10 +193,22 @@ html, body{
     margin-left: 50px;    
 }
 
-.name, .mytext, .sender, .sendertext{
-    display: inline;
 
+.name{
+    margin-top: 0px;
+    color: rgb(7, 136, 22);
+    font-weight: bold;
+    font-size: 12px;
 }
+.sender{
+    margin-top: 0px;
+    color:  rgb(125, 130, 125);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+
 
 .typebox{
     margin-top: 0px;
@@ -199,3 +260,81 @@ html, body{
     
 }
 
+.btn {
+    
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    margin-top: 25px;
+    background-color: rgb(196, 236, 204);
+    border: 1px solid rgb(116, 225, 114);
+}
+.btn:hover{
+    background-color: #28D146;
+    color: #fff;
+}
+
+.userlist{
+    margin-top: 25px;
+    font-size: 15px;
+    font-weight: 400;
+    color: black;
+    margin-left: 20px;
+    /* padding-top: 40px; */
+    padding-bottom: 40px;
+
+}
+
+.adduserinput{
+    border: 1px solid rgb(116, 225, 114);
+    margin-left: 20px;
+    margin-bottom: 10px;
+    margin-top: 45px;
+}
+
+ #adduserbtn{
+    margin-left: 5px;
+    margin-bottom: 30px;
+    margin-top: 26px;
+    color: rgb(38, 131, 52);
+
+}
+#adduserbtn:hover{
+    color: #fff;
+}
+
+#exitgroupbtn {
+    margin-left: 5px;
+    margin-bottom: 30px;
+    margin-top: 26px;
+    color:  rgba(219, 46, 46, 0.992);
+    background-color: #fff;
+    border: 1px solid rgb(176, 54, 54);
+}
+
+#deletegroupbtn {
+    margin-left: 20px;
+    margin-bottom: 30px;
+    margin-top: 26px;
+    color:  rgba(219, 46, 46, 0.992);
+    background-color: #fff;
+    border: 1px solid rgb(176, 54, 54);
+}
+
+#exitgroupbtn:hover, #deletegroupbtn:hover{
+    background-color: #d12828;
+    color: #fff;
+}
+
+#removeuser{
+    color:  rgba(219, 46, 46, 0.992);
+    background-color: #fff;
+    border: 1px solid rgb(176, 54, 54);
+}
+
+#removeuser:hover{
+    background-color: #d12828;
+    color: #fff;
+}

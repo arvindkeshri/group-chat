@@ -54,7 +54,10 @@ const signin = async (req, res) => {
           else {
             if (result === true){
               console.log("User Login Successful!");
-              return res.status(200).json({success: true, message: "User logged in successfully", token: generateAccessToken(existingUser.id, existingUser.name, existingUser.ispremiumuser)});
+              const token = generateAccessToken(existingUser.id, existingUser.name, existingUser.ispremiumuser);
+              const userId = jwt.decode(token).userId;
+              const name = jwt.decode(token).name;
+              return res.status(200).json({success: true, message: "User logged in successfully", token: generateAccessToken(existingUser.id, existingUser.name, existingUser.ispremiumuser), userId, name});
             }
             else res.status(400).send("Incorrect Password");
           }

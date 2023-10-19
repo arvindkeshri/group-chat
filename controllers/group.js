@@ -8,10 +8,11 @@ const createGroup = async (req, res)=>{
     const adminId = req.body.userId;
     try{
         const newGroup = await Group.create({groupname: groupname, adminId: adminId, userId: adminId})
+    
         const groupId = newGroup.id;
         console.log("groupId", groupId);
-
-        await Usergroup.create({groupId: groupId, userId: adminId})  
+        const somedata = await Usergroup.create({groupId: groupId, userId: adminId, isGroupAdmin: true })  
+        console.log(">>>>>.",somedata)
         res.status(200).json({success: true, message: "Group created successfully",newGroup:{groupname: groupname, groupId: groupId}})  
     }catch(err){
         res.status(500).json({message: "Error creating group", error:err})
@@ -39,6 +40,16 @@ const fetchGroup = async(req, res)=>{
     }
 }
 
+const fetchGroupUsers = async (req, res)=>{
+    try{
+        //const users = await User.findAll({where:{groupId: groupId}})
+        // res.status(200).json(users)
+    }catch(err){
+        console.log(err)
+    }
+    
+}
+
 
 
 
@@ -47,4 +58,5 @@ const fetchGroup = async(req, res)=>{
 module.exports = {
     createGroup,
     fetchGroup,
+    fetchGroupUsers,
 }
