@@ -101,6 +101,10 @@ html, body{
 
 }
 
+.logo:hover{
+    cursor: pointer;
+}
+
 #groupbtn {
     background-color: #28D146;
     border: none;

@@ -8,11 +8,8 @@ const createGroup = async (req, res)=>{
     const adminId = req.body.userId;
     try{
         const newGroup = await Group.create({groupname: groupname, adminId: adminId, userId: adminId})
-    
         const groupId = newGroup.id;
-        console.log("groupId", groupId);
         const somedata = await Usergroup.create({groupId: groupId, userId: adminId, isGroupAdmin: true })  
-        console.log(">>>>>.",somedata)
         res.status(200).json({success: true, message: "Group created successfully",newGroup:{groupname: groupname, groupId: groupId}})  
     }catch(err){
         res.status(500).json({message: "Error creating group", error:err})
@@ -20,20 +17,13 @@ const createGroup = async (req, res)=>{
     }
 }
 
-const fetchGroup = async(req, res)=>{
-    console.log("userId>>>>>>>>>", req.params.id)
+const fetchGroups = async(req, res)=>{
     try{
-        response = await Usergroup.findAll({
-            where:{userId: req.params.id},
-            //  include: [{model: Group, as: 'group', attributes: ['groupname']}]
-        })
-        console.log(response);
-        
+        response = await Usergroup.findAll({where:{userId: req.params.id}})
         const groups = await Promise.all(response.map(async(res)=>{
             const group = await Group.findByPk(res.groupId);
             return group;
         }));
-        console.log(groups);
         res.status(200).json(groups);
     }catch(err){
         res.status(500).json(err)
@@ -41,15 +31,113 @@ const fetchGroup = async(req, res)=>{
 }
 
 const fetchGroupUsers = async (req, res)=>{
+    const groupId = req.params.id;
     try{
-        //const users = await User.findAll({where:{groupId: groupId}})
-        // res.status(200).json(users)
+        const response = await Usergroup.findAll({where:{groupId: groupId}});
+        const users = await Promise.all(response.map(async(res)=>{
+            const user = await User.findByPk(res.userId);
+            return {name: user.name, userId: user.id};
+        }))
+        console.log(users);
+        res.status(200).json(users)
     }catch(err){
         console.log(err)
     }
     
 }
 
+const addMember = async (req, res)=>{
+    const groupId = req.body.activeGroupId;
+    const email = req.body.email;
+    try{
+        const memberToAdd = await User.findOne({where:{email:email}})  
+        await Usergroup.create({groupId: groupId, userId: memberToAdd.id }) ;
+        res.status(200).json({success: true, message: "Group created successfully",newGroupMember:{name: memberToAdd.name, id:memberToAdd.id,  message: "user added successfully"}})  
+    }catch(err){
+        res.status(500).json({message: "Error adding user to group", error:err})
+
+    }
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+const deleteMember = async (req, res)=>{
+    const activeGroupId = req.params.activeGroupId;
+    const userId = req.params.userId;
+    const adminId = req.user.id;
+    console.log(activeGroupId, userId, adminId);
+
+    try{
+        const group = await Group.findOne({where:{id:activeGroupId}}) 
+        if(!group) return res.status(200).json({success: false, message: "group not found"})  
+
+        if(group.isAdmin && group.userId===adminId){
+            await Usergroup.destroy({where:{groupId:activeGroupId, userId: userId}});
+            return res.status(200).json({success: true, message: "Member removed from the group"})  
+        }else{
+           return  res.status(200).json({success: false, message: "user is not Admin"})  
+        }
+    }catch(err){
+        return res.status(500).json({message: "Error deleting group-member", error:err})
+
+    }
+}
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+const makeAdmin = async (req, res)=>{
+    const activeGroupId = req.params.activeGroupId;
+    const userId = req.params.userId;
+    const adminId = req.user.id;
+    console.log(activeGroupId, userId, adminId);
+    try{
+        const group = await Group.findOne({where:{id:activeGroupId}}) 
+        if(!group) return res.status(200).json({success: false, message: "group not found"})  
+
+        if(group.isAdmin && group.userId===adminId){
+            await Usergroup.update({isGroupAdmin: true},{where:{groupId:activeGroupId, userId: userId}});
+            return res.status(200).json({success: true, message: "Member removed from the group"})  
+        }else{
+           return  res.status(200).json({success: false, message: "user is not Admin"})  
+        }
+    }catch(err){
+        return res.status(500).json({message: "Error deleting group-member", error:err})
+
+    }
+}
+
+const exitGroup = async (req, res)=>{
+    const activeGroupId = req.params.activeGroupId;
+    const userId = req.params.userId;
+    try{
+        const usergroup = await Usergroup.findOne({where:{userId:userId, groupId:activeGroupId}}) 
+       if(usergroup){
+        await usergroup.destroy();
+        res.status(200).json({success: true, message: "user left group successfully"})  
+        }
+        
+    }catch(err){
+        res.status(500).json({message: "user not found in group", error:err})
+
+    }
+}
+
+const deleteGroup = async (req, res)=>{
+    const activeGroupId = req.params.activeGroupId;
+    const userId = req.params.userId;
+    try{
+        const group = await Group.findOne({where:{id:activeGroupId}}) 
+        if(!group) return res.status(200).json({success: false, message: "group not found"})  
+
+        if(group.isAdmin){
+            await group.destroy();
+            await Usergroup.destroy({where:{groupId:activeGroupId}});
+            return res.status(200).json({success: true, message: "Group deleted"})  
+        }else{
+           return  res.status(200).json({success: false, message: "user is not Admin"})  
+        }
+    }catch(err){
+        return res.status(500).json({message: "Error deleting group", error:err})
+
+    }
+}
 
 
 
@@ -57,6 +145,11 @@ const fetchGroupUsers = async (req, res)=>{
 
 module.exports = {
     createGroup,
-    fetchGroup,
+    fetchGroups,
     fetchGroupUsers,
+    addMember,
+    deleteMember,
+    makeAdmin,
+    exitGroup,
+    deleteGroup
 }
