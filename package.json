@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "@getbrevo/brevo": "^1.0.1",
+    "aws-sdk": "^2.1478.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

@@ -1,3 +1,5 @@
+// const { response } = require("express");
+
 const socket = io('http://localhost:3000')
 const usertoken = localStorage.getItem('token')                      
 let activeGroupId = localStorage.getItem('activeGroupId');
@@ -315,8 +317,34 @@ function displayMessage (sender, message) {
     messages.appendChild(messageContainer);
     messages.scrollTop = messages.scrollHeight;
 }
-
-
+    
+    // function uploadFile(){
+    //-------------------------------------------------------------------------------
+    const sendfilebtn = document.getElementById('sendfilebtn');
+    const fileinput = document.getElementById('fileInput');
+    sendfilebtn.addEventListener('click', ()=>{
+        fileinput.click();
+    })
+    fileinput.addEventListener('change', async(e)=>{
+        const selectedFile = e.target.files[0];
+        if(selectedFile){
+            const data = new FormData();
+            data.append('file', selectedFile);
+            try{
+                response = await axios.post(`http://localhost:3000/message/uploadFile/${activeGroupId}`, data,  {headers:{Authorization: usertoken}})
+                const url = response.data.url;  
+                if(!response.data.success) return alert('no true response')
+                else{
+                const img = document.createElement('img');
+                const chatscreen= document.querySelector('.messages');
+                chatscreen.appendChild(img);    
+                }      
+            }catch(err){
+                console.log("error uploading file", err)
+            }
+        }
+    })
+// }
 
 
 
