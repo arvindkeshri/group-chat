@@ -59,7 +59,7 @@ const addMember = async (req, res)=>{
     }
 }
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 const deleteMember = async (req, res)=>{
     const activeGroupId = req.params.activeGroupId;
     const userId = req.params.userId;
@@ -81,7 +81,7 @@ const deleteMember = async (req, res)=>{
 
     }
 }
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 const makeAdmin = async (req, res)=>{
     const activeGroupId = req.params.activeGroupId;
     const userId = req.params.userId;
