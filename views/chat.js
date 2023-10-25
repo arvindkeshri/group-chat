@@ -1,5 +1,4 @@
 // const { response } = require("express");
-
 const socket = io('http://localhost:3000')
 const usertoken = localStorage.getItem('token')                      
 let activeGroupId = localStorage.getItem('activeGroupId');
